@@ -1,8 +1,17 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import { HomeIcon, NotebookIcon, Mail, Sun, Moon, Images, LibraryBig } from "lucide-react";
 import { site, projects } from "@/data/site";
 import type { PostMeta } from "@/lib/posts";
@@ -26,7 +35,28 @@ function LinkedInIcon() {
   );
 }
 
-function DockIcon({ mouseX, label, children }: { mouseX: MotionValue<number>; label: string; children: React.ReactNode }) {
+type DockEntry = {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  href?: string;
+  onClick?: () => void;
+  match?: (path: string) => boolean;
+};
+
+function DockIcon({
+  entry,
+  mouseX,
+  active,
+  hovered,
+  onHover,
+}: {
+  entry: DockEntry;
+  mouseX: MotionValue<number>;
+  active: boolean;
+  hovered: boolean;
+  onHover: (id: string | null) => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const distance = useTransform(mouseX, (x) => {
     const b = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
@@ -37,20 +67,72 @@ function DockIcon({ mouseX, label, children }: { mouseX: MotionValue<number>; la
     stiffness: 150,
     damping: 12,
   });
+
+  const cls = "relative z-10 flex h-full w-full items-center justify-center rounded-full";
+  const external = entry.href && !entry.href.startsWith("/");
+  const inner = entry.href ? (
+    external ? (
+      <a href={entry.href} aria-label={entry.label} target={entry.href.startsWith("mailto") ? undefined : "_blank"} rel="noreferrer" className={cls}>{entry.icon}</a>
+    ) : (
+      <Link href={entry.href} aria-label={entry.label} className={cls}>{entry.icon}</Link>
+    )
+  ) : (
+    <button type="button" onClick={entry.onClick} aria-label={entry.label} className={cls}>{entry.icon}</button>
+  );
+
   return (
-    <motion.div ref={ref} style={{ width }} className="group relative flex aspect-square cursor-pointer items-center justify-center rounded-full">
-      {children}
-      <span className="pointer-events-none absolute -top-10 whitespace-nowrap rounded-md bg-fg px-3 py-1.5 text-xs text-bg opacity-0 transition-opacity group-hover:opacity-100">
-        {label}
-      </span>
+    <motion.div
+      ref={ref}
+      style={{ width }}
+      whileTap={{ scale: 0.82 }}
+      onHoverStart={() => onHover(entry.id)}
+      onHoverEnd={() => onHover(null)}
+      className="relative flex aspect-square cursor-pointer items-center justify-center rounded-full"
+    >
+      {/* sliding hover highlight, shared between icons */}
+      {hovered && (
+        <motion.span layoutId="dock-hover" className="absolute inset-0 rounded-full bg-accent" transition={{ type: "spring", stiffness: 500, damping: 35 }} />
+      )}
+      {inner}
+      {/* active page dot */}
+      <AnimatePresence>
+        {active && (
+          <motion.span
+            layoutId="dock-active"
+            className="absolute -bottom-1 size-1 rounded-full bg-fg"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+          />
+        )}
+      </AnimatePresence>
+      {/* tooltip */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.span
+            initial={{ opacity: 0, y: 6, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="pointer-events-none absolute -top-10 whitespace-nowrap rounded-md bg-fg px-2.5 py-1 text-xs font-medium text-bg"
+          >
+            {entry.label}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
 
-const btn =
-  "inline-flex size-12 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-colors hover:bg-accent";
-
 type Item = { label: string; hint: string; run: () => void };
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const next = root.dataset.theme === "dark" ? "light" : "dark";
+  root.dataset.theme = next;
+  root.style.colorScheme = next;
+  try { localStorage.setItem("theme", next); } catch {}
+}
 
 export default function Dock({
   posts,
@@ -62,10 +144,22 @@ export default function Dock({
   showLibrary: boolean;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const mouseX = useMotionValue(Infinity);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [sel, setSel] = useState(0);
+
+  // scroll progress line + hide on scroll down, show on scroll up
+  const { scrollY, scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 30 });
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    const nearBottom = window.innerHeight + y >= document.documentElement.scrollHeight - 80;
+    setHidden(y > prev && y > 160 && !nearBottom);
+  });
 
   // Hidden extra: Cmd/Ctrl+K opens a quick-jump palette.
   useEffect(() => {
@@ -82,13 +176,32 @@ export default function Dock({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const toggleTheme = () => {
-    const root = document.documentElement;
-    const next = root.dataset.theme === "dark" ? "light" : "dark";
-    root.dataset.theme = next;
-    root.style.colorScheme = next;
-    try { localStorage.setItem("theme", next); } catch {}
-  };
+  const groups: DockEntry[][] = [
+    [
+      { id: "home", label: "Home", href: "/", icon: <HomeIcon className="size-4" />, match: (p) => p === "/" },
+      { id: "blog", label: "Blog", href: "/blog", icon: <NotebookIcon className="size-4" />, match: (p) => p.startsWith("/blog") },
+      ...(showLibrary ? [{ id: "library", label: "Library", href: "/library", icon: <LibraryBig className="size-4" />, match: (p: string) => p.startsWith("/library") }] : []),
+      ...(showGallery ? [{ id: "gallery", label: "Gallery", href: "/gallery", icon: <Images className="size-4" />, match: (p: string) => p.startsWith("/gallery") }] : []),
+    ],
+    [
+      { id: "github", label: "GitHub", href: site.github, icon: <GitHubIcon /> },
+      { id: "linkedin", label: "LinkedIn", href: site.linkedin, icon: <LinkedInIcon /> },
+      { id: "email", label: "Email", href: `mailto:${site.email}`, icon: <Mail className="size-4" /> },
+    ],
+    [
+      {
+        id: "theme",
+        label: "Theme",
+        onClick: toggleTheme,
+        icon: (
+          <motion.span whileTap={{ rotate: 180 }} className="flex">
+            <Sun className="theme-dark-only size-4" />
+            <Moon className="theme-light-only size-4" />
+          </motion.span>
+        ),
+      },
+    ],
+  ];
 
   const items: Item[] = useMemo(() => {
     const go = (href: string) => () => {
@@ -113,48 +226,40 @@ export default function Dock({
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 mx-auto mb-4 flex h-full max-h-14 origin-bottom">
-        <div className="fixed inset-x-0 bottom-0 h-16 w-full bg-bg backdrop-blur-lg [-webkit-mask-image:linear-gradient(to_top,black,transparent)] [mask-image:linear-gradient(to_top,black,transparent)]" />
-        <motion.div
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-16 w-full bg-bg backdrop-blur-lg [-webkit-mask-image:linear-gradient(to_top,black,transparent)] [mask-image:linear-gradient(to_top,black,transparent)]" />
+      <motion.div
+        animate={{ y: hidden ? 96 : 0, opacity: hidden ? 0 : 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto mb-4 flex h-14 origin-bottom"
+      >
+        <motion.nav
+          aria-label="Main"
           onMouseMove={(e) => mouseX.set(e.pageX)}
-          onMouseLeave={() => mouseX.set(Infinity)}
-          className="pointer-events-auto relative z-50 mx-auto flex h-full min-h-full w-max transform-gpu items-center rounded-full border bg-bg p-2 px-1 [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
+          onMouseLeave={() => { mouseX.set(Infinity); setHovered(null); }}
+          className="pointer-events-auto relative mx-auto flex h-full w-max transform-gpu items-center gap-0.5 overflow-visible rounded-full border bg-bg/80 px-1.5 backdrop-blur-xl [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
         >
-          <DockIcon mouseX={mouseX} label="Home">
-            <Link href="/" aria-label="Home" className={btn}><HomeIcon className="size-4" /></Link>
-          </DockIcon>
-          <DockIcon mouseX={mouseX} label="Blog">
-            <Link href="/blog" aria-label="Blog" className={btn}><NotebookIcon className="size-4" /></Link>
-          </DockIcon>
-          {showLibrary && (
-            <DockIcon mouseX={mouseX} label="Library">
-              <Link href="/library" aria-label="Library" className={btn}><LibraryBig className="size-4" /></Link>
-            </DockIcon>
-          )}
-          {showGallery && (
-            <DockIcon mouseX={mouseX} label="Gallery">
-              <Link href="/gallery" aria-label="Gallery" className={btn}><Images className="size-4" /></Link>
-            </DockIcon>
-          )}
-          <div role="none" className="h-full w-px shrink-0 bg-line" />
-          <DockIcon mouseX={mouseX} label="GitHub">
-            <a href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub" className={btn}><GitHubIcon /></a>
-          </DockIcon>
-          <DockIcon mouseX={mouseX} label="LinkedIn">
-            <a href={site.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className={btn}><LinkedInIcon /></a>
-          </DockIcon>
-          <DockIcon mouseX={mouseX} label="Email">
-            <a href={`mailto:${site.email}`} aria-label="Email" className={btn}><Mail className="size-4" /></a>
-          </DockIcon>
-          <div role="none" className="h-full w-px shrink-0 bg-line py-2" />
-          <DockIcon mouseX={mouseX} label="Theme">
-            <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className="inline-flex h-9 w-9 items-center justify-center rounded-full px-2 transition-colors hover:bg-accent">
-              <Sun className="theme-dark-only size-4" />
-              <Moon className="theme-light-only size-4" />
-            </button>
-          </DockIcon>
-        </motion.div>
-      </div>
+          {/* scroll progress along the top edge */}
+          <span className="pointer-events-none absolute inset-x-6 -top-px h-px overflow-hidden">
+            <motion.span className="block h-full origin-left bg-fg/70" style={{ scaleX: progress }} />
+          </span>
+
+          {groups.map((group, gi) => (
+            <div key={gi} className="flex h-full items-center gap-0.5">
+              {gi > 0 && <div role="none" className="mx-1 h-3/5 w-px shrink-0 bg-line" />}
+              {group.map((entry) => (
+                <DockIcon
+                  key={entry.id}
+                  entry={entry}
+                  mouseX={mouseX}
+                  active={!!entry.match?.(pathname)}
+                  hovered={hovered === entry.id}
+                  onHover={setHovered}
+                />
+              ))}
+            </div>
+          ))}
+        </motion.nav>
+      </motion.div>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-[15vh] backdrop-blur-sm" onClick={() => setOpen(false)}>

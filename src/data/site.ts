@@ -10,10 +10,10 @@ export const site = {
   linkedin: "https://www.linkedin.com/in/manoj-kulkarni-736423205",
   tagline: "I build AI agents, ML systems and the infra they run on.",
   // Set your birth date (YYYY-MM-DD) to show the live "Been here for 21.xxxxxxxxx years" counter under your name.
-  born: undefined as string | undefined,
+  born: "2005-09-30",
   // Put a photo at public/me.jpg and set avatar: "/me.jpg" to replace the initials.
   avatar: undefined as string | undefined,
-  initials: "MK",
+  initials: "MJ",
 };
 
 export const about: { text: string; href?: string }[][] = [
