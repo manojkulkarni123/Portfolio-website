@@ -33,12 +33,12 @@ export default function FailureChart() {
         <path d={thr} fill="none" stroke="var(--muted)" strokeDasharray="4 4" strokeWidth="1.2" />
         <text x={P + 4} y={y(0.5) - 6} fontSize="10" fill="var(--muted)" fontFamily="var(--font-mono)">adaptive threshold</text>
         <motion.path
-          d={path} fill="none" stroke="var(--accent)" strokeWidth="2"
+          d={path} fill="none" stroke="var(--fg)" strokeWidth="2"
           initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
           transition={{ duration: 2.2, ease: "easeInOut" }}
         />
-        <line x1={x(alertH)} x2={x(alertH)} y1={P} y2={H - P} stroke="var(--accent)" strokeWidth="1" />
-        <text x={x(alertH) - 6} y={P + 12} textAnchor="end" fontSize="10" fill="var(--accent)" fontFamily="var(--font-mono)">alert</text>
+        <line x1={x(alertH)} x2={x(alertH)} y1={P} y2={H - P} stroke="var(--fg)" strokeWidth="1" />
+        <text x={x(alertH) - 6} y={P + 12} textAnchor="end" fontSize="10" fill="var(--fg)" fontFamily="var(--font-mono)">alert</text>
         <line x1={x(0)} x2={x(0)} y1={P} y2={H - P} stroke="#f87171" strokeWidth="1.5" />
         <text x={(x(alertH) + x(0)) / 2} y={P + 12} textAnchor="middle" fontSize="11" fill="var(--fg)" fontFamily="var(--font-mono)">~2.5h</text>
       </svg>

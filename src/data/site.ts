@@ -70,6 +70,7 @@ export const experience: Role[] = [
     title: "Placement Coordinator",
     period: "Oct 2024 - Present",
     initials: "B",
+    logo: "/logos/bmsce.png",
     href: "https://bmsce.ac.in",
     description: "Helping run campus placements.",
   },
@@ -78,6 +79,7 @@ export const experience: Role[] = [
     title: "Founder's Office, Sales | Intern",
     period: "Apr 2024 - Jun 2024",
     initials: "F",
+    logo: "/logos/finzie.png",
     description: "Outbound lead gen, market research and email campaigns (+15% open rates), working directly with the founder.",
   },
 ];
@@ -88,6 +90,7 @@ export const education = [
     degree: "B.Tech, Computer Science & Engineering | CGPA 8.66",
     period: "2023 - 2027",
     initials: "B",
+    logo: "/logos/bmsce.png",
     href: "https://bmsce.ac.in",
   },
   {
@@ -95,6 +98,7 @@ export const education = [
     degree: "11th-12th Science | KCET rank 1566",
     period: "2021 - 2023",
     initials: "B",
+    logo: "/logos/base.png",
     href: undefined as string | undefined,
   },
 ];
@@ -102,31 +106,44 @@ export const education = [
 export type Project = {
   slug: string;
   name: string;
-  oneLiner: string;
+  /** shown on the right of the row, like a date */
+  highlight: string;
   stack: string;
+  oneLiner: string;
+  logo: string;
   blurb: string;
   tags: string[];
   href?: string;
+  repo?: string;
   caseStudy?: boolean;
 };
+
+const gh = "https://github.com/manojkulkarni123";
 
 export const projects: Project[] = [
   {
     slug: "agentk",
     name: "AgentK",
-    oneLiner: "An agent that diagnoses broken Kubernetes pods and asks before it fixes anything.",
-    stack: "LangGraph | Kubernetes",
+    highlight: "human-in-the-loop",
+    stack: "LangGraph | kopf | Kubernetes",
+    oneLiner:
+      "A Kubernetes remediation agent that learns from incidents. A read-only operator flags failures; a LangGraph agent investigates on a tool budget, proposes a fix behind an approval gate, and remembers every approved incident.",
+    logo: "/logos/kubernetes.svg",
     blurb:
-      "Kubernetes incident-diagnosis agent on LangGraph. Detects pod failures, investigates with read-only tools, recalls similar incidents from Chroma, and proposes fixes behind a human approval gate.",
-    tags: ["LangGraph", "Kubernetes", "Chroma", "RBAC"],
+      "Kubernetes remediation agent that learns from incidents: read-only operator, agentic diagnosis loop, human approval gate, memory of approved fixes.",
+    tags: ["LangGraph", "kopf", "Kubernetes", "Chroma", "RBAC"],
     href: "/projects/agentk",
+    repo: `${gh}/Agentk`,
     caseStudy: true,
   },
   {
     slug: "hpc-aiops",
     name: "AIOps for HPC clusters",
-    oneLiner: "LSTM-VAE + Pi-Transformer for node-failure prediction and anomaly detection.",
-    stack: "PyTorch | HPE",
+    highlight: "6/7 failures caught",
+    stack: "PyTorch | LSTM-VAE | Transformers",
+    oneLiner:
+      "From my HPE internship: unsupervised node-failure prediction with ~2.5h of warning on Marconi-100, and a Pi-Transformer that fuses metrics with 25M+ log lines.",
+    logo: "/logos/hpe.png",
     blurb:
       "From my HPE internship: a dual LSTM-VAE that warns ~2.5h before node failures, and Pi-Transformer, which fuses metrics and logs to detect anomalies.",
     tags: ["PyTorch", "LSTM-VAE", "Transformers", "AIOps"],
@@ -134,20 +151,51 @@ export const projects: Project[] = [
     caseStudy: true,
   },
   {
+    slug: "eeg-neuromarketing",
+    name: "EEG Neuromarketing",
+    highlight: "major project",
+    stack: "Python | EEG | Signal processing",
+    oneLiner:
+      "Second-by-second ad engagement from a 19-channel dry-electrode EEG cap while people watch real TV ads. Team project with industry hardware; we first rebuilt a published decision-decoding study (AUC 0.563 vs 0.558 in the paper).",
+    logo: "/logos/brain.svg",
+    blurb: "Measuring ad engagement from EEG while people watch real TV ads.",
+    tags: ["Python", "EEG", "Signal processing"],
+    href: `${gh}/Neuromarketing-EEG`,
+  },
+  {
     slug: "private-chat",
     name: "Private Chat",
-    oneLiner: "End-to-end encrypted chat, deployed with zero open ports.",
-    stack: "Next.js | Socket.IO",
-    blurb: "Real-time chat with browser-side E2E encryption on AWS EC2 behind a Cloudflare Tunnel, with Redis for auto-expiring rooms.",
+    highlight: "live",
+    stack: "Next.js | Socket.IO | Redis",
+    oneLiner:
+      "Real-time chat with browser-side end-to-end encryption, on AWS EC2 behind a Cloudflare Tunnel (zero open ports), with Redis for auto-expiring rooms.",
+    logo: "/logos/lock-keyhole.svg",
+    blurb: "End-to-end encrypted real-time chat.",
     tags: ["Next.js", "Socket.IO", "Redis", "AWS"],
-    href: "https://github.com/manojkulkarni123", // TODO: exact repo URL
+    href: "https://private-chat-iota-pearl.vercel.app",
+    repo: `${gh}/private_chat`,
+  },
+  {
+    slug: "whatsapp-llm-alert-bot",
+    name: "WhatsApp LLM Alert Bot",
+    highlight: "local LLM",
+    stack: "Ollama | FastAPI | whatsapp-web.js",
+    oneLiner:
+      "Watches noisy WhatsApp groups and pings me only about jobs, internships and gigs. Filtering runs on a local LLM, so no message leaves my machine.",
+    logo: "/logos/whatsapp.svg",
+    blurb: "Local-LLM filter for WhatsApp group opportunities.",
+    tags: ["Ollama", "FastAPI", "Node.js"],
+    href: `${gh}/whatsapp-llm-alert-bot`,
   },
   {
     slug: "ki-lab",
     name: "Ki-lab",
-    oneLiner: "An old laptop running 10+ services and a Kubernetes cluster.",
-    stack: "Homelab | Linux",
-    blurb: "Headless Ubuntu server with Tailscale, Nginx, Pi-hole, Prometheus/Grafana and a self-hosted OpenClaw agent.",
+    highlight: "10+ services",
+    stack: "Ubuntu | Kubernetes | Tailscale",
+    oneLiner:
+      "An old laptop turned headless server: a local Kubernetes cluster, Nginx, Pi-hole DNS filtering, Prometheus/Grafana and a self-hosted OpenClaw agent, all reachable over Tailscale.",
+    logo: "/logos/ubuntu.svg",
+    blurb: "Self-hosted homelab.",
     tags: ["Kubernetes", "Tailscale", "Prometheus"],
   },
 ];
@@ -155,24 +203,31 @@ export const projects: Project[] = [
 export const wins = [
   {
     name: "Omi Hackathon Bangalore",
+    logo: "/logos/omi.png",
     initials: "O",
     right: "2nd place",
     sub: "200+ builders",
-    description: "Voice-to-action: routed intent from live transcripts to OpenClaw.",
+    description:
+      "Built Omi-Claw: an LLM gate on live Omi transcripts that spots actionable intent and hands it to an OpenClaw agent to execute. Voice to action.",
+    href: `${gh}/Omi-Claw`,
   },
   {
     name: "Moss",
+    logo: "/logos/moss.png",
     initials: "M",
     right: "PR #88",
     sub: "Open source | YC-backed",
-    description: "Cookbook for Moss as a retrieval layer in AutoGen workflows.",
+    description: "Merged: an AutoGen integration cookbook using Moss as the retrieval layer for multi-agent workflows.",
+    href: "https://github.com/usemoss/moss/pull/88",
   },
   {
-    name: "OpenClaw-usecases",
+    name: "awesome-openclaw-usecases",
+    logo: "/logos/openclaw.png",
     initials: "O",
     right: "PR #2",
     sub: "Open source",
-    description: "Streams live agent progress to Todoist.",
+    description: "Merged: a use case that streams live agent progress to Todoist for visibility into long-running tasks.",
+    href: "https://github.com/hesamsheikh/awesome-openclaw-usecases/pull/2",
   },
 ];
 

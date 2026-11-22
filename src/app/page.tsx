@@ -86,7 +86,7 @@ export default function Home() {
           <H2 delay={D * 7}>things I built</H2>
           {projects.map((p, i) => (
             <Reveal key={p.slug} delay={D * 8 + i * 0.05}>
-              <ResumeCard initials={p.name[0]} title={p.name} subtitle={p.stack} description={p.oneLiner} href={p.href} />
+              <ResumeCard logo={p.logo} initials={p.name[0]} title={p.name} period={p.highlight} subtitle={p.stack} description={p.oneLiner} href={p.href} />
             </Reveal>
           ))}
         </div>
@@ -97,7 +97,7 @@ export default function Home() {
           <H2 delay={D * 9}>open source &amp; hackathons</H2>
           {wins.map((w, i) => (
             <Reveal key={w.name} delay={D * 10 + i * 0.05}>
-              <ResumeCard initials={w.initials} title={w.name} period={w.right} subtitle={w.sub} description={w.description} />
+              <ResumeCard logo={w.logo} initials={w.initials} title={w.name} period={w.right} subtitle={w.sub} description={w.description} href={w.href} />
             </Reveal>
           ))}
         </div>
@@ -108,7 +108,7 @@ export default function Home() {
           <H2 delay={D * 11}>education</H2>
           {education.map((e, i) => (
             <Reveal key={e.school} delay={D * 12 + i * 0.05}>
-              <ResumeCard initials={e.initials} title={e.school} subtitle={e.degree} period={e.period} href={e.href} />
+              <ResumeCard logo={e.logo} initials={e.initials} title={e.school} subtitle={e.degree} period={e.period} href={e.href} />
             </Reveal>
           ))}
         </div>

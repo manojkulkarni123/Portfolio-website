@@ -33,19 +33,29 @@ function H2({ children }: { children: React.ReactNode }) {
 function AgentK() {
   return (
     <>
-      <p className="text-lg leading-relaxed text-muted">
-        When a pod fails, an on-call engineer runs the same commands every time: logs, events, describe, check the ConfigMap, check limits.
-        AgentK does that investigation automatically, then stops and asks a human before anything changes.
+      <p className="leading-relaxed text-muted">
+        A Kubernetes remediation agent that learns from incidents. When a workload fails, AgentK investigates the way an engineer would:
+        it reads logs, container state, config and the workload spec, works out the root cause, and writes a proposed fix.
+        It never touches the cluster, and a human approves every diagnosis.{" "}
+        <a href="https://github.com/manojkulkarni123/Agentk" target="_blank" rel="noreferrer" className="text-fg underline underline-offset-4">Source on GitHub</a>.
       </p>
-      <H2>How it works</H2>
+      <H2>How a diagnosis runs</H2>
       <AgentFlow />
-      <H2>Design choices</H2>
-      <ul className="space-y-3 text-muted">
-        <li><span className="text-fg">Read-only by construction.</span> Safety is enforced by a scoped RBAC ClusterRole, not by the prompt. Even a confused model cannot write to the cluster.</li>
-        <li><span className="text-fg">Human approval gate.</span> The agent proposes a remediation plan; a person decides whether it happens.</li>
-        <li><span className="text-fg">Memory from approved incidents.</span> Only incidents a human signed off on are stored in Chroma, so retrieval learns from good diagnoses, not guesses.</li>
-        <li><span className="text-fg">LangGraph state machine.</span> Each step is an explicit node in a graph, which makes every run easy to follow and debug.</li>
+      <H2>Three ideas hold it together</H2>
+      <ul className="space-y-3 text-sm text-muted">
+        <li><span className="font-semibold text-fg">Hybrid trigger.</span> The operator only detects and notifies; a human runs the diagnosis. Detection is cheap and always on, while the expensive agentic part stays behind a person, so cost and autonomy are bounded by design.</li>
+        <li><span className="font-semibold text-fg">Agentic diagnosis.</span> A <code>diagnose ⇄ tools</code> cycle in LangGraph. The model keeps calling read-only inspectors until it has enough evidence, then submits. It adapts to the failure in front of it instead of running one fixed prompt.</li>
+        <li><span className="font-semibold text-fg">Curated memory.</span> Only approved diagnoses are stored, and writes are deduped, so a recurring failure can&apos;t pile up into a false consensus. Memory is a vetted set of incidents, not a log of every guess.</li>
       </ul>
+      <H2>What it detects</H2>
+      <div className="flex flex-wrap gap-1">
+        {["CrashLoopBackOff", "RunContainerError", "ImagePullBackOff", "OOMKilled", "ReadinessProbeFailed", "Init-container failures", "Pending / Unschedulable", "Multi-container pods"].map((s) => (
+          <span key={s} className="rounded-md bg-secondary px-2 py-0.5 text-xs font-semibold">{s}</span>
+        ))}
+      </div>
+      <p className="mt-3 text-sm text-muted">
+        Reading the desired workload spec is what catches config bugs that logs hide, like a typo in the command or a probe pointed at a path the app doesn&apos;t serve.
+      </p>
     </>
   );
 }
