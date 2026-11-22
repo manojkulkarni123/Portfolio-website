@@ -1,7 +1,7 @@
 export const site = {
   name: "Manoj Kulkarni",
   firstName: "Manoj",
-  url: "https://manojkulkarni.dev", // TODO: replace with your real domain / Vercel URL
+  url: "https://portfolio-web-ochre-psi.vercel.app", // change if you add a custom domain
   email: "manoj.kulkarni074@gmail.com",
   github: "https://github.com/manojkulkarni123",
   linkedin: "https://www.linkedin.com/in/manoj-kulkarni-736423205",
