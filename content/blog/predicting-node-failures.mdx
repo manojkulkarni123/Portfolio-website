@@ -1,0 +1,27 @@
+---
+title: "Predicting HPC node failures without failure labels"
+date: "2026-12-08"
+summary: "How a dual LSTM-VAE with per-node thresholds gave ~2.5 hours of warning."
+tags: ["ml", "aiops", "pytorch"]
+draft: true
+---
+
+{/* DRAFT: hidden in production until you remove `draft: true`. Check what you're allowed to share from the HPE project first. */}
+
+## Failures are rare
+
+- Why supervised learning doesn't work well here.
+
+## Learning "normal" instead
+
+- The dual LSTM-VAE setup, at a high level.
+
+## One threshold doesn't fit every node
+
+- Per-node adaptive thresholds.
+
+## Results on Marconi-100
+
+- ~2.5h warning, 6 of 7 failures caught (85.7% recall).
+
+## What didn't work

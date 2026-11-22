@@ -1,0 +1,31 @@
+---
+title: "Keeping a Kubernetes agent read-only by design"
+date: "2026-12-01"
+summary: "Why AgentK's safety lives in RBAC, not in the prompt."
+tags: ["kubernetes", "agents", "langgraph"]
+draft: true
+---
+
+{/* DRAFT: hidden in production until you remove `draft: true`. Visible in `npm run dev`. Outline below; fill in with your own details. */}
+
+## The problem
+
+- What a typical pod-failure investigation looks like by hand.
+
+## Why prompts aren't a safety boundary
+
+- A model can be told "don't delete anything" and still try. RBAC can't be argued with.
+
+## The ClusterRole
+
+- Show the actual rules (get/list/watch on pods, events, configmaps, deployments…).
+
+## The human gate
+
+- How the approval step works in the LangGraph graph.
+
+## Memory from approved incidents
+
+- Why only approved incidents go into Chroma.
+
+## What I'd do next
