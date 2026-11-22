@@ -4,6 +4,9 @@ export const site = {
   url: "https://portfolio-web-ochre-psi.vercel.app", // change if you add a custom domain
   email: "manoj.kulkarni074@gmail.com",
   github: "https://github.com/manojkulkarni123",
+  githubUser: "manojkulkarni123",
+  // one-liner next to the green dot under your name
+  status: "final year @ BMSCE · joining HPE Networking, Feb '27",
   linkedin: "https://www.linkedin.com/in/manoj-kulkarni-736423205",
   tagline: "I build AI agents, ML systems and the infra they run on.",
   // Set your birth date (YYYY-MM-DD) to show the live "Been here for 21.xxxxxxxxx years" counter under your name.

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
-import { HomeIcon, NotebookIcon, Mail, Sun, Moon } from "lucide-react";
+import { HomeIcon, NotebookIcon, Mail, Sun, Moon, Images, LibraryBig } from "lucide-react";
 import { site, projects } from "@/data/site";
 import type { PostMeta } from "@/lib/posts";
 
@@ -52,7 +52,15 @@ const btn =
 
 type Item = { label: string; hint: string; run: () => void };
 
-export default function Dock({ posts }: { posts: PostMeta[] }) {
+export default function Dock({
+  posts,
+  showGallery,
+  showLibrary,
+}: {
+  posts: PostMeta[];
+  showGallery: boolean;
+  showLibrary: boolean;
+}) {
   const router = useRouter();
   const mouseX = useMotionValue(Infinity);
   const [open, setOpen] = useState(false);
@@ -91,6 +99,8 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
     return [
       { label: "Home", hint: "Page", run: go("/") },
       { label: "Blog", hint: "Page", run: go("/blog") },
+      ...(showLibrary ? [{ label: "Library", hint: "Page", run: go("/library") }] : []),
+      ...(showGallery ? [{ label: "Gallery", hint: "Page", run: go("/gallery") }] : []),
       ...posts.map((p) => ({ label: p.title, hint: "Post", run: go(`/blog/${p.slug}`) })),
       ...projects.filter((p) => p.caseStudy).map((p) => ({ label: p.name, hint: "Case study", run: go(`/projects/${p.slug}`) })),
       { label: "GitHub", hint: "Link", run: go(site.github) },
@@ -98,7 +108,7 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
       { label: "Email", hint: "Link", run: go(`mailto:${site.email}`) },
       { label: "Toggle theme", hint: "Action", run: () => { toggleTheme(); setOpen(false); } },
     ];
-  }, [posts, router]);
+  }, [posts, router, showGallery, showLibrary]);
   const filtered = items.filter((i) => i.label.toLowerCase().includes(q.toLowerCase()));
 
   return (
@@ -116,6 +126,16 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
           <DockIcon mouseX={mouseX} label="Blog">
             <Link href="/blog" aria-label="Blog" className={btn}><NotebookIcon className="size-4" /></Link>
           </DockIcon>
+          {showLibrary && (
+            <DockIcon mouseX={mouseX} label="Library">
+              <Link href="/library" aria-label="Library" className={btn}><LibraryBig className="size-4" /></Link>
+            </DockIcon>
+          )}
+          {showGallery && (
+            <DockIcon mouseX={mouseX} label="Gallery">
+              <Link href="/gallery" aria-label="Gallery" className={btn}><Images className="size-4" /></Link>
+            </DockIcon>
+          )}
           <div role="none" className="h-full w-px shrink-0 bg-line" />
           <DockIcon mouseX={mouseX} label="GitHub">
             <a href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub" className={btn}><GitHubIcon /></a>
