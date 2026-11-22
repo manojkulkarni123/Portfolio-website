@@ -73,15 +73,29 @@ export const experience: Role[] = [
     href: "https://bmsce.ac.in",
     description: "Helping run campus placements.",
   },
+  {
+    org: "Finzie",
+    title: "Founder's Office, Sales | Intern",
+    period: "Apr 2024 - Jun 2024",
+    initials: "F",
+    description: "Outbound lead gen, market research and email campaigns (+15% open rates), working directly with the founder.",
+  },
 ];
 
 export const education = [
   {
     school: "BMS College of Engineering",
-    degree: "B.Tech, Computer Science & Engineering",
+    degree: "B.Tech, Computer Science & Engineering | CGPA 8.66",
     period: "2023 - 2027",
     initials: "B",
     href: "https://bmsce.ac.in",
+  },
+  {
+    school: "BASE PU College",
+    degree: "11th-12th Science | KCET rank 1566",
+    period: "2021 - 2023",
+    initials: "B",
+    href: undefined as string | undefined,
   },
 ];
 
