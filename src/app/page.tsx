@@ -1,166 +1,191 @@
 import Link from "next/link";
-import { ArrowRight, Mail } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import Avatar from "@/components/Avatar";
+import ResumeCard from "@/components/ResumeCard";
 import ProjectCard from "@/components/ProjectCard";
-import { site, experience, projects, openSource, achievements, skills } from "@/data/site";
+import { site, experience, education, projects, openSource, achievements, skills } from "@/data/site";
 import { getPosts } from "@/lib/posts";
 
-function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+const D = 0.04; // stagger step
+
+function Heading({ children, delay }: { children: React.ReactNode; delay: number }) {
   return (
-    <section id={id} className="mx-auto max-w-5xl scroll-mt-20 px-5 py-16">
-      <Reveal>
-        <h2 className="mb-8 font-mono text-sm uppercase tracking-widest text-accent">{`// ${title}`}</h2>
-      </Reveal>
-      {children}
-    </section>
+    <Reveal delay={delay}>
+      <h2 className="text-xl font-bold">{children}</h2>
+    </Reveal>
   );
+}
+
+function Pill({ children }: { children: React.ReactNode }) {
+  return <span className="inline-block rounded-lg bg-fg px-3 py-1 text-sm text-bg">{children}</span>;
 }
 
 export default function Home() {
   const posts = getPosts().slice(0, 3);
+  const allSkills = Object.values(skills).flat();
+  const wins = [
+    ...achievements.map((a) => ({ title: a.title, sub: "Hackathon", detail: a.detail, initials: "🏆" })),
+    ...openSource.map((o) => ({ title: o.name, sub: o.note, detail: o.detail, initials: o.name[0] })),
+  ];
+
   return (
-    <>
-      <section className="relative overflow-hidden">
-        <div className="grid-bg absolute inset-0 -z-10 opacity-60" />
-        <div className="mx-auto max-w-5xl px-5 pb-20 pt-24 sm:pt-32">
-          <Reveal>
-            <p className="font-mono text-sm text-muted">
-              <span className="text-accent">$</span> whoami
-            </p>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <h1 className="mt-4 text-5xl font-semibold tracking-tight sm:text-7xl">{site.name}</h1>
-          </Reveal>
-          <Reveal delay={0.16}>
-            <p className="caret mt-5 max-w-2xl text-xl text-muted sm:text-2xl">{site.tagline}</p>
-          </Reveal>
-          <Reveal delay={0.24}>
-            <p className="mt-6 max-w-2xl leading-relaxed text-muted">{site.intro}</p>
-          </Reveal>
-          <Reveal delay={0.32}>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a href="#projects" className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-bg">
-                See my work <ArrowRight size={15} />
-              </a>
-              <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 rounded-lg border border-line px-4 py-2 text-sm hover:border-accent">
-                <Mail size={15} /> Get in touch
-              </a>
-              <span className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1.5 font-mono text-xs text-muted">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-accent" style={{ animation: "ping-dot 1.6s ease-out infinite" }} />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-                </span>
-                Joining HPE Networking · Feb 2027
-              </span>
-            </div>
+    <main className="flex min-h-[100dvh] flex-col space-y-10">
+      {/* hero */}
+      <section>
+        <div className="flex justify-between gap-2">
+          <div className="flex flex-1 flex-col space-y-1.5">
+            <Reveal>
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">Hi, I&apos;m Manoj 👋</h1>
+            </Reveal>
+            <Reveal delay={D}>
+              <p className="max-w-[600px] md:text-xl">{site.tagline}</p>
+            </Reveal>
+          </div>
+          <Reveal delay={D}>
+            <Avatar src={site.avatar} initials={site.initials} className="size-28" textClass="text-3xl" />
           </Reveal>
         </div>
       </section>
 
-      <Section id="experience" title="experience">
-        <ol className="relative space-y-10 border-l border-line pl-8">
-          {experience.map((r) => (
-            <Reveal key={r.org + r.title}>
-              <li className="relative">
-                <span
-                  className={`absolute -left-[37px] top-1.5 h-2.5 w-2.5 rounded-full border-2 ${
-                    r.status === "incoming" ? "border-accent bg-bg" : "border-accent bg-accent"
-                  }`}
-                />
-                <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                  <h3 className="text-lg font-semibold">
-                    {r.title} <span className="text-muted">· {r.org}</span>
-                  </h3>
-                  <span className="font-mono text-xs text-muted">
-                    {r.status === "incoming" && <span className="mr-2 rounded bg-accent-soft px-1.5 py-0.5 text-accent">incoming</span>}
-                    {r.period}
-                  </span>
-                </div>
-                {r.points.length > 0 && (
-                  <ul className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
-                    {r.points.map((p) => (
-                      <li key={p} className="flex gap-2"><span className="text-accent">›</span><span>{p}</span></li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            </Reveal>
-          ))}
-        </ol>
-      </Section>
-
-      <Section id="projects" title="projects">
-        <div className="grid gap-5 sm:grid-cols-2">
-          {projects.map((p, i) => (
-            <Reveal key={p.slug} delay={(i % 2) * 0.08}><ProjectCard p={p} /></Reveal>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="open-source" title="open source & wins">
-        <div className="grid gap-5 sm:grid-cols-2">
-          {openSource.map((o) => (
-            <Reveal key={o.name}>
-              <div className="h-full rounded-2xl border border-line bg-card p-6">
-                <h3 className="font-semibold">{o.name} <span className="text-sm font-normal text-muted">· {o.note}</span></h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{o.detail}</p>
-              </div>
-            </Reveal>
-          ))}
-          {achievements.map((a) => (
-            <Reveal key={a.title}>
-              <div className="h-full rounded-2xl border border-accent/40 bg-accent-soft p-6 sm:col-span-2">
-                <h3 className="font-semibold">🏆 {a.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{a.detail}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="skills" title="skills">
-        <Reveal>
-          <dl className="space-y-4">
-            {Object.entries(skills).map(([k, v]) => (
-              <div key={k} className="flex flex-col gap-2 sm:flex-row sm:items-baseline">
-                <dt className="w-40 shrink-0 font-mono text-xs text-muted">{k}</dt>
-                <dd className="flex flex-wrap gap-1.5">
-                  {v.map((s) => (
-                    <span key={s} className="rounded-md border border-line px-2.5 py-1 text-sm">{s}</span>
-                  ))}
-                </dd>
-              </div>
-            ))}
-          </dl>
+      {/* about */}
+      <section className="space-y-2">
+        <Heading delay={D * 3}>About</Heading>
+        <Reveal delay={D * 4}>
+          <div className="space-y-3 text-pretty text-sm text-muted">
+            {site.about.map((p) => <p key={p}>{p}</p>)}
+          </div>
         </Reveal>
-      </Section>
+      </section>
 
-      {posts.length > 0 && (
-        <Section id="writing" title="writing">
-          <div className="space-y-4">
-            {posts.map((p) => (
-              <Reveal key={p.slug}>
-                <Link href={`/blog/${p.slug}`} className="group flex items-baseline justify-between gap-4 border-b border-line pb-4">
-                  <span className="font-medium group-hover:text-accent">{p.title}</span>
-                  <span className="shrink-0 font-mono text-xs text-muted">{p.date}</span>
-                </Link>
+      {/* work */}
+      <section id="work" className="scroll-mt-12">
+        <div className="flex min-h-0 flex-col gap-y-4">
+          <Heading delay={D * 5}>Work Experience</Heading>
+          {experience.map((r, i) => (
+            <Reveal key={r.org + r.title} delay={D * 6 + i * 0.05}>
+              <ResumeCard
+                logo={r.logo}
+                initials={r.initials}
+                title={r.org}
+                subtitle={r.title}
+                period={r.period}
+                badges={r.badges}
+                points={r.points}
+                href={r.href}
+              />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* education */}
+      <section>
+        <div className="flex min-h-0 flex-col gap-y-4">
+          <Heading delay={D * 7}>Education</Heading>
+          {education.map((e, i) => (
+            <Reveal key={e.school} delay={D * 8 + i * 0.05}>
+              <ResumeCard initials={e.initials} title={e.school} subtitle={e.degree} period={e.period} href={e.href} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* skills */}
+      <section>
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <Heading delay={D * 9}>Skills</Heading>
+          <div className="flex flex-wrap gap-1">
+            {allSkills.map((s, i) => (
+              <Reveal key={s} delay={D * 10 + i * 0.02}>
+                <span className="inline-flex rounded-md bg-fg px-2 py-0.5 text-xs font-semibold text-bg">{s}</span>
               </Reveal>
             ))}
-            <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-accent">All posts <ArrowRight size={14} /></Link>
           </div>
-        </Section>
+        </div>
+      </section>
+
+      {/* projects */}
+      <section id="projects" className="scroll-mt-12">
+        <div className="w-full space-y-12 py-12">
+          <Reveal delay={D * 11}>
+            <div className="flex flex-col items-center justify-center space-y-2 text-center">
+              <Pill>My Projects</Pill>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Check out my latest work</h2>
+              <p className="text-muted md:text-xl/relaxed">
+                Agents, ML systems and infrastructure. A couple of them have full write-ups.
+              </p>
+            </div>
+          </Reveal>
+          <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-3 sm:grid-cols-2">
+            {projects.map((p, i) => (
+              <Reveal key={p.slug} delay={D * 12 + i * 0.05} className="h-full">
+                <ProjectCard p={p} />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* open source & wins */}
+      <section>
+        <div className="w-full space-y-12 py-12">
+          <Reveal delay={D * 13}>
+            <div className="flex flex-col items-center justify-center space-y-2 text-center">
+              <Pill>Open Source &amp; Wins</Pill>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Things I shipped outside work</h2>
+              <p className="text-muted md:text-xl/relaxed">Merged PRs and hackathon builds.</p>
+            </div>
+          </Reveal>
+          <Reveal delay={D * 14}>
+            <ul className="mb-4 ml-4 divide-y divide-dashed divide-line border-l border-line">
+              {wins.map((w) => (
+                <li key={w.title} className="relative ml-10 py-4">
+                  <div className="absolute -left-16 top-4 flex items-center justify-center rounded-full bg-bg">
+                    <Avatar initials={w.initials} className="size-12" />
+                  </div>
+                  <div className="flex flex-1 flex-col justify-start gap-1">
+                    <span className="text-xs text-muted">{w.sub}</span>
+                    <h3 className="font-semibold leading-none">{w.title}</h3>
+                    <p className="text-sm text-muted">{w.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* writing */}
+      {posts.length > 0 && (
+        <section className="space-y-4">
+          <Heading delay={D * 15}>Writing</Heading>
+          {posts.map((p, i) => (
+            <Reveal key={p.slug} delay={D * 16 + i * 0.05}>
+              <Link href={`/blog/${p.slug}`} className="flex flex-col space-y-1">
+                <span className="text-sm font-medium tracking-tight hover:underline">{p.title}</span>
+                <span className="text-xs text-muted">{p.date}</span>
+              </Link>
+            </Reveal>
+          ))}
+        </section>
       )}
 
-      <Section id="contact" title="contact">
-        <Reveal>
-          <p className="max-w-xl text-2xl font-semibold tracking-tight">Building something with agents, ML or infra? Let&apos;s talk.</p>
-          <div className="mt-6 flex flex-wrap gap-4 text-sm">
-            <a className="text-accent hover:underline" href={`mailto:${site.email}`}>{site.email}</a>
-            <a className="hover:text-accent" href={site.github} target="_blank" rel="noreferrer">GitHub</a>
-            <a className="hover:text-accent" href={site.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-          </div>
-        </Reveal>
-      </Section>
-    </>
+      {/* contact */}
+      <section id="contact" className="scroll-mt-12">
+        <div className="grid w-full items-center justify-center gap-4 px-4 py-12 text-center md:px-6">
+          <Reveal delay={D * 17}>
+            <div className="space-y-3">
+              <Pill>Contact</Pill>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Get in Touch</h2>
+              <p className="mx-auto max-w-[600px] text-muted md:text-xl/relaxed">
+                Want to chat about agents, ML or infra? Drop me an{" "}
+                <a href={`mailto:${site.email}`} className="text-fg underline underline-offset-4">email</a> or a message on{" "}
+                <a href={site.linkedin} target="_blank" rel="noreferrer" className="text-fg underline underline-offset-4">LinkedIn</a>.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    </main>
   );
 }

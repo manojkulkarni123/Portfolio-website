@@ -19,15 +19,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-xl border border-line bg-card p-4">
-      <div className="font-mono text-2xl font-semibold text-accent">{value}</div>
+    <div className="rounded-lg border border-line bg-card p-4">
+      <div className="text-2xl font-bold tracking-tighter tabular-nums">{value}</div>
       <div className="mt-1 text-xs text-muted">{label}</div>
     </div>
   );
 }
 
 function H2({ children }: { children: React.ReactNode }) {
-  return <h2 className="mb-4 mt-14 text-2xl font-semibold tracking-tight">{children}</h2>;
+  return <h2 className="mb-4 mt-12 text-xl font-bold">{children}</h2>;
 }
 
 function AgentK() {
@@ -93,13 +93,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const Body = bodies[slug];
   if (!p || !Body) notFound();
   return (
-    <article className="mx-auto max-w-3xl px-5 py-16">
-      <Link href="/#projects" className="text-sm text-muted hover:text-accent">← Projects</Link>
+    <article>
+      <Link href="/#projects" className="text-sm text-muted hover:text-fg">← projects</Link>
       <Reveal>
-        <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">{p.name}</h1>
-        <div className="mt-4 flex flex-wrap gap-1.5">
+        <h1 className="mt-6 text-3xl font-bold tracking-tighter sm:text-5xl">{p.name}</h1>
+        <div className="mt-4 flex flex-wrap gap-1">
           {p.tags.map((t) => (
-            <span key={t} className="rounded-md bg-accent-soft px-2 py-0.5 font-mono text-xs text-accent">{t}</span>
+            <span key={t} className="rounded-md bg-secondary px-1.5 py-0.5 text-xs font-semibold">{t}</span>
           ))}
         </div>
       </Reveal>

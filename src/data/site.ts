@@ -6,16 +6,23 @@ export const site = {
   linkedin: "https://www.linkedin.com/in/manoj-kulkarni-736423205",
   location: "Bengaluru, India",
   tagline: "I build AI agents, ML systems and the infrastructure they run on.",
-  intro:
-    "Computer Science undergrad at BMS College of Engineering. I work across applied AI, backend services and Kubernetes: LangGraph agents, anomaly detection for HPC clusters, and a homelab I run for fun.",
+  // Put a photo at public/me.jpg and set avatar: "/me.jpg" to replace the initials.
+  avatar: undefined as string | undefined,
+  initials: "MK",
+  about: [
+    "tldr; final-year CS undergrad at BMS College of Engineering who likes building things that run on their own: LangGraph agents, anomaly detection for HPC clusters, and a homelab made out of an old laptop.",
+    "Most of my work sits where applied AI meets infrastructure: Python, LangGraph, FastAPI, Docker and Kubernetes. Previously at HPE and HiDevs; joining HPE Networking in Feb 2027.",
+  ],
 };
 
 export type Role = {
   org: string;
   title: string;
   period: string;
-  place?: string;
-  status?: "current" | "incoming";
+  initials: string;
+  logo?: string;
+  href?: string;
+  badges?: string[];
   points: string[];
 };
 
@@ -24,15 +31,17 @@ export const experience: Role[] = [
     org: "HPE Networking",
     title: "Software Engineer Intern",
     period: "Feb 2027",
-    place: "Bengaluru",
-    status: "incoming",
-    points: ["Joining the HPE Networking (Juniper) team."],
+    initials: "HN",
+    href: "https://www.hpe.com/us/en/networking.html",
+    badges: ["Incoming"],
+    points: [],
   },
   {
     org: "Hewlett Packard Enterprise",
-    title: "CPP Project Intern, HPCM AIOps",
+    title: "CPP Project Intern · HPCM AIOps",
     period: "Feb 2026 – Jul 2026",
-    place: "Bengaluru",
+    initials: "H",
+    href: "https://www.hpe.com",
     points: [
       "Built a dual LSTM-VAE for unsupervised node-failure prediction on HPC clusters, with per-node adaptive thresholds. About 2.5 hours of advance warning on Marconi-100 telemetry, catching 6 of 7 failures (85.7% recall).",
       "Built Pi-Transformer, a multimodal anomaly detector fusing 40 metrics with logs (Drain templates + MiniLM) through cross-modal attention. 0.70 AUROC, ~73% of fault episodes caught, on GAIA-MicroSS (25M+ log lines).",
@@ -42,7 +51,7 @@ export const experience: Role[] = [
     org: "HiDevs",
     title: "Applied AI Intern",
     period: "Nov 2024 – May 2025",
-    place: "Bengaluru",
+    initials: "HD",
     points: [
       "Built a LangGraph GitHub Repository Evaluation Agent used in production: it checks project claims against source code and returns accept/reject decisions with detailed feedback in 5–7 minutes.",
       "Built an autonomous blog pipeline from Google Sheets topics to LLM-written posts published on Hashnode.",
@@ -53,7 +62,25 @@ export const experience: Role[] = [
     org: "BMS College of Engineering",
     title: "Placement Coordinator",
     period: "Oct 2024 – Present",
+    initials: "B",
+    href: "https://bmsce.ac.in",
     points: [],
+  },
+];
+
+export const education = [
+  {
+    school: "BMS College of Engineering",
+    degree: "B.Tech, Computer Science & Engineering · CGPA 8.64",
+    period: "2023 – 2027",
+    initials: "B",
+    href: "https://bmsce.ac.in",
+  },
+  {
+    school: "BASE PU College, Hubli",
+    degree: "PUC · 87% · KCET rank 1566",
+    period: "2021 – 2023",
+    initials: "BP",
   },
 ];
 
