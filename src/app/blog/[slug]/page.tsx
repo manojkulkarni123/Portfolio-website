@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypePrettyCode from "rehype-pretty-code";
+import PostDate from "@/components/PostDate";
 import { getPost, getPosts } from "@/lib/posts";
 
 export function generateStaticParams() {
@@ -26,11 +26,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   if (!post) notFound();
   const { meta, content } = post;
   return (
-    <article>
-      <Link href="/blog" className="text-sm text-muted hover:text-fg">← blog</Link>
-      <h1 className="mt-6 max-w-[650px] text-3xl font-medium tracking-tighter">{meta.title}</h1>
-      <div className="mt-2 text-sm text-muted">{meta.date} · {meta.minutes} min read</div>
-      <div className="prose-blog mt-8">
+    <section id="blog">
+      <h1 className="title max-w-[650px] text-2xl font-medium tracking-tighter">{meta.title}</h1>
+      <div className="mb-8 mt-2 flex max-w-[650px] items-center justify-between text-sm">
+        <PostDate date={meta.date} />
+      </div>
+      <article className="prose dark:prose-invert">
         <MDXRemote
           source={content}
           options={{
@@ -43,7 +44,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             },
           }}
         />
-      </div>
-    </article>
+      </article>
+    </section>
   );
 }

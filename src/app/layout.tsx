@@ -16,14 +16,14 @@ export const metadata: Metadata = {
   openGraph: { title: site.name, description: site.tagline, type: "website" },
 };
 
-// Saved choice wins; otherwise follow the OS setting.
-const themeScript = `try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}`;
+// Dark by default; a saved choice wins.
+const themeScript = `try{var t=localStorage.getItem('theme')||'dark';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="light" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable}`}>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body className="mx-auto min-h-screen max-w-2xl px-6 py-12 pb-32 sm:py-24 sm:pb-36">
+      <body className="mx-auto min-h-screen max-w-2xl bg-bg px-6 py-12 font-sans antialiased sm:py-24">
         {children}
         <Dock posts={getPosts()} />
       </body>

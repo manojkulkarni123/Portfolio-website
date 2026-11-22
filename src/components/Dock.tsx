@@ -3,9 +3,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
-import { Home, NotebookPen, Mail, Search, Sun, Moon } from "lucide-react";
+import { HomeIcon, NotebookIcon, Mail, Sun, Moon } from "lucide-react";
 import { site, projects } from "@/data/site";
 import type { PostMeta } from "@/lib/posts";
+
+const MAGNIFICATION = 60;
+const DISTANCE = 140;
+const BASE = 40;
 
 function GitHubIcon() {
   return (
@@ -22,46 +26,29 @@ function LinkedInIcon() {
   );
 }
 
-function DockItem({
-  mouseX,
-  label,
-  children,
-  href,
-  onClick,
-}: {
-  mouseX: MotionValue<number>;
-  label: string;
-  children: React.ReactNode;
-  href?: string;
-  onClick?: () => void;
-}) {
+function DockIcon({ mouseX, label, children }: { mouseX: MotionValue<number>; label: string; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const distance = useTransform(mouseX, (x) => {
     const b = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
     return x - b.x - b.width / 2;
   });
-  const size = useSpring(useTransform(distance, [-120, 0, 120], [40, 56, 40]), { mass: 0.1, stiffness: 160, damping: 13 });
-
-  const cls = "flex h-full w-full items-center justify-center rounded-full text-fg transition-colors hover:bg-secondary";
-  const inner = href ? (
-    href.startsWith("/") ? (
-      <Link href={href} aria-label={label} className={cls}>{children}</Link>
-    ) : (
-      <a href={href} aria-label={label} target={href.startsWith("mailto") ? undefined : "_blank"} rel="noreferrer" className={cls}>{children}</a>
-    )
-  ) : (
-    <button onClick={onClick} aria-label={label} className={cls}>{children}</button>
-  );
-
+  const width = useSpring(useTransform(distance, [-DISTANCE, 0, DISTANCE], [BASE, MAGNIFICATION, BASE]), {
+    mass: 0.1,
+    stiffness: 150,
+    damping: 12,
+  });
   return (
-    <motion.div ref={ref} style={{ width: size, height: size }} className="group relative flex aspect-square items-center justify-center">
-      {inner}
-      <span className="pointer-events-none absolute -top-9 whitespace-nowrap rounded-md border border-line bg-bg px-2 py-0.5 text-xs opacity-0 transition-opacity group-hover:opacity-100">
+    <motion.div ref={ref} style={{ width }} className="group relative flex aspect-square cursor-pointer items-center justify-center rounded-full">
+      {children}
+      <span className="pointer-events-none absolute -top-10 whitespace-nowrap rounded-md bg-fg px-3 py-1.5 text-xs text-bg opacity-0 transition-opacity group-hover:opacity-100">
         {label}
       </span>
     </motion.div>
   );
 }
+
+const btn =
+  "inline-flex size-12 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-colors hover:bg-accent";
 
 type Item = { label: string; hint: string; run: () => void };
 
@@ -72,13 +59,13 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
   const [q, setQ] = useState("");
   const [sel, setSel] = useState(0);
 
-  const openPalette = () => { setQ(""); setSel(0); setOpen(true); };
-
+  // Hidden extra: Cmd/Ctrl+K opens a quick-jump palette.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setQ(""); setSel(0);
+        setQ("");
+        setSel(0);
         setOpen((o) => !o);
       }
       if (e.key === "Escape") setOpen(false);
@@ -87,11 +74,11 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Theme lives on <html data-theme>; icons swap via CSS so SSR and client always match.
   const toggleTheme = () => {
     const root = document.documentElement;
     const next = root.dataset.theme === "dark" ? "light" : "dark";
     root.dataset.theme = next;
+    root.style.colorScheme = next;
     try { localStorage.setItem("theme", next); } catch {}
   };
 
@@ -104,14 +91,11 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
     return [
       { label: "Home", hint: "Page", run: go("/") },
       { label: "Blog", hint: "Page", run: go("/blog") },
-      { label: "Work experience", hint: "Section", run: go("/#work") },
-      { label: "Projects", hint: "Section", run: go("/#projects") },
-      { label: "Contact", hint: "Section", run: go("/#contact") },
       ...posts.map((p) => ({ label: p.title, hint: "Post", run: go(`/blog/${p.slug}`) })),
       ...projects.filter((p) => p.caseStudy).map((p) => ({ label: p.name, hint: "Case study", run: go(`/projects/${p.slug}`) })),
       { label: "GitHub", hint: "Link", run: go(site.github) },
       { label: "LinkedIn", hint: "Link", run: go(site.linkedin) },
-      { label: "Email me", hint: "Link", run: go(`mailto:${site.email}`) },
+      { label: "Email", hint: "Link", run: go(`mailto:${site.email}`) },
       { label: "Toggle theme", hint: "Action", run: () => { toggleTheme(); setOpen(false); } },
     ];
   }, [posts, router]);
@@ -119,31 +103,42 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-16 bg-bg/60 backdrop-blur-lg [mask-image:linear-gradient(to_top,black,transparent)]" />
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto mb-4 flex justify-center">
-        <motion.nav
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 mx-auto mb-4 flex h-full max-h-14 origin-bottom">
+        <div className="fixed inset-x-0 bottom-0 h-16 w-full bg-bg backdrop-blur-lg [-webkit-mask-image:linear-gradient(to_top,black,transparent)] [mask-image:linear-gradient(to_top,black,transparent)]" />
+        <motion.div
           onMouseMove={(e) => mouseX.set(e.pageX)}
           onMouseLeave={() => mouseX.set(Infinity)}
-          className="pointer-events-auto flex h-14 items-end gap-1 rounded-full border border-line bg-bg px-2 pb-2 shadow-[0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)]"
+          className="pointer-events-auto relative z-50 mx-auto flex h-full min-h-full w-max transform-gpu items-center rounded-full border bg-bg p-2 px-1 [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
         >
-          <DockItem mouseX={mouseX} label="Home" href="/"><Home className="size-4" /></DockItem>
-          <DockItem mouseX={mouseX} label="Blog" href="/blog"><NotebookPen className="size-4" /></DockItem>
-          <span className="mx-1 h-full w-px self-center bg-line" />
-          <DockItem mouseX={mouseX} label="GitHub" href={site.github}><GitHubIcon /></DockItem>
-          <DockItem mouseX={mouseX} label="LinkedIn" href={site.linkedin}><LinkedInIcon /></DockItem>
-          <DockItem mouseX={mouseX} label="Email" href={`mailto:${site.email}`}><Mail className="size-4" /></DockItem>
-          <span className="mx-1 h-full w-px self-center bg-line" />
-          <DockItem mouseX={mouseX} label="Search ⌘K" onClick={openPalette}><Search className="size-4" /></DockItem>
-          <DockItem mouseX={mouseX} label="Theme" onClick={toggleTheme}>
-            <Sun className="theme-dark-only size-4" />
-            <Moon className="theme-light-only size-4" />
-          </DockItem>
-        </motion.nav>
+          <DockIcon mouseX={mouseX} label="Home">
+            <Link href="/" aria-label="Home" className={btn}><HomeIcon className="size-4" /></Link>
+          </DockIcon>
+          <DockIcon mouseX={mouseX} label="Blog">
+            <Link href="/blog" aria-label="Blog" className={btn}><NotebookIcon className="size-4" /></Link>
+          </DockIcon>
+          <div role="none" className="h-full w-px shrink-0 bg-line" />
+          <DockIcon mouseX={mouseX} label="GitHub">
+            <a href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub" className={btn}><GitHubIcon /></a>
+          </DockIcon>
+          <DockIcon mouseX={mouseX} label="LinkedIn">
+            <a href={site.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className={btn}><LinkedInIcon /></a>
+          </DockIcon>
+          <DockIcon mouseX={mouseX} label="Email">
+            <a href={`mailto:${site.email}`} aria-label="Email" className={btn}><Mail className="size-4" /></a>
+          </DockIcon>
+          <div role="none" className="h-full w-px shrink-0 bg-line py-2" />
+          <DockIcon mouseX={mouseX} label="Theme">
+            <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className="inline-flex h-9 w-9 items-center justify-center rounded-full px-2 transition-colors hover:bg-accent">
+              <Sun className="theme-dark-only size-4" />
+              <Moon className="theme-light-only size-4" />
+            </button>
+          </DockIcon>
+        </motion.div>
       </div>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-[15vh] backdrop-blur-sm" onClick={() => setOpen(false)}>
-          <div className="w-full max-w-lg overflow-hidden rounded-xl border border-line bg-bg shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-lg overflow-hidden rounded-lg border bg-bg shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <input
               autoFocus
               value={q}
@@ -154,7 +149,7 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
                 if (e.key === "Enter") filtered[sel]?.run();
               }}
               placeholder="Type a command or search…"
-              className="w-full border-b border-line bg-transparent px-4 py-3 text-sm outline-none placeholder:text-muted"
+              className="w-full border-b bg-transparent px-4 py-3 text-sm outline-none placeholder:text-muted"
             />
             <ul className="max-h-72 overflow-y-auto p-1.5">
               {filtered.length === 0 && <li className="px-3 py-4 text-sm text-muted">No results.</li>}
@@ -163,7 +158,7 @@ export default function Dock({ posts }: { posts: PostMeta[] }) {
                   <button
                     onClick={i.run}
                     onMouseEnter={() => setSel(idx)}
-                    className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm ${idx === sel ? "bg-secondary" : ""}`}
+                    className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm ${idx === sel ? "bg-accent" : ""}`}
                   >
                     {i.label}
                     <span className="text-xs text-muted">{i.hint}</span>
