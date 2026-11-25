@@ -86,7 +86,7 @@ export default function Bookshelf({ books }: { books: ShelfBook[] }) {
   const shelves: [string, ShelfBook[]][] = [
     ["currently reading", books.filter((b) => b.status === "reading")],
     ["read", books.filter((b) => b.status === "read")],
-    ["up next", books.filter((b) => b.status === "next")],
+    ["few I'm eyeing", books.filter((b) => b.status === "next")],
   ];
 
   return (
@@ -106,7 +106,7 @@ export default function Bookshelf({ books }: { books: ShelfBook[] }) {
               <div className="flex h-36 w-24 shrink-0 items-center justify-center rounded-sm bg-secondary p-2 text-center text-[10px] font-semibold">{book.title}</div>
             )}
             <div className="min-w-0 pr-6">
-              <span className="text-xs text-muted">{{ reading: "currently reading", read: "read", next: "up next" }[book.status]}</span>
+              <span className="text-xs text-muted">{{ reading: "currently reading", read: "read", next: "on my list" }[book.status]}</span>
               <h3 className="mt-1 font-semibold leading-tight">{book.title}</h3>
               <p className="text-sm text-muted">{book.author}</p>
               {book.note && <p className="mt-3 text-sm">{book.note}</p>}

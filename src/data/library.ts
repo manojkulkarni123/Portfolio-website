@@ -51,6 +51,10 @@ export const books: Book[] = [
   { title: "The Compound Effect", author: "Darren Hardy", status: "read" },
   { title: "How to Think Like Leonardo da Vinci", author: "Michael J. Gelb", status: "read" },
   { title: "The Alchemist", author: "Paulo Coelho", status: "read" },
+  { title: "Man's Search for Meaning", author: "Viktor E. Frankl", status: "read", cover: cover(14633660) },
+  { title: "Zero to One", author: "Peter Thiel", status: "read", cover: cover(9002334) },
+
+  // few I'm eyeing: add books with status: "next" and they get their own shelf
 ];
 
 export const blogs: BlogLink[] = [
