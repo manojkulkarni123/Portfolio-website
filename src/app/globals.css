@@ -62,3 +62,13 @@ body {
 :root[data-theme="dark"] .prose pre span { color: var(--shiki-dark); }
 .prose :not(pre) > code::before, .prose :not(pre) > code::after { content: none; }
 .prose :not(pre) > code { background: var(--secondary); padding: 0.15em 0.35em; border-radius: 4px; font-weight: 500; }
+
+/* EEG monitor traces (BrainWaves): slide one period left, forever */
+@keyframes eeg-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-600px); }
+}
+.eeg-scroll { animation: eeg-scroll 8s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .eeg-scroll { animation: none; }
+}
