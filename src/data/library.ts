@@ -60,13 +60,8 @@ export const books: Book[] = [
   { title: "Flow", author: "Mihaly Csikszentmihalyi", status: "next", cover: cover(11041932) },
 ];
 
-export const blogs: BlogLink[] = [
-  { title: "Building effective agents", author: "Anthropic", url: "https://www.anthropic.com/engineering/building-effective-agents", note: "Workflows vs agents, and when to use which." },
-  { title: "LLM Powered Autonomous Agents", author: "Lilian Weng", url: "https://lilianweng.github.io/posts/2023-06-23-agent/", note: "Planning, memory and tool use, all in one post." },
-  { title: "A Recipe for Training Neural Networks", author: "Andrej Karpathy", url: "https://karpathy.github.io/2019/04/25/recipe/", note: "Practical habits that save days of debugging." },
-  { title: "The Illustrated Transformer", author: "Jay Alammar", url: "https://jalammar.github.io/illustrated-transformer/", note: "The clearest visual explanation of attention." },
-  { title: "How to Do Great Work", author: "Paul Graham", url: "https://paulgraham.com/greatwork.html" },
-];
+// blogs worth reading: the section appears on /library once this has entries
+export const blogs: BlogLink[] = [];
 
 /* ---- shown by `npm run dev` only if the lists above are empty ---- */
 export const demoBooks: Book[] = [];

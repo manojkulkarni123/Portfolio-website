@@ -20,8 +20,8 @@ export const about: { text: string; href?: string }[][] = [
   [{ text: "Tldr; final-year CS undergrad who likes building things that run on their own." }],
   [{ text: "Agents, ML systems, Kubernetes, and a homelab made out of an old laptop." }],
   [
-    { text: "Want the long version? " },
-    { text: "Here's what I've built", href: "/#projects" },
+    { text: "If you want to know more about me, " },
+    { text: "here are some things I believe in", href: "/blog/things-i-believe" },
     { text: "." },
   ],
 ];
