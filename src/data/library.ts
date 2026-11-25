@@ -54,7 +54,10 @@ export const books: Book[] = [
   { title: "Man's Search for Meaning", author: "Viktor E. Frankl", status: "read", cover: cover(14633660) },
   { title: "Zero to One", author: "Peter Thiel", status: "read", cover: cover(9002334) },
 
-  // few I'm eyeing: add books with status: "next" and they get their own shelf
+  // few I'm eyeing (from Obsidian: Library/Books to read.md)
+  { title: "Thinking in Bets", author: "Annie Duke", status: "next", cover: cover(8792782) },
+  { title: "1984", author: "George Orwell", status: "next", cover: cover(8745958) },
+  { title: "Flow", author: "Mihaly Csikszentmihalyi", status: "next", cover: cover(11041932) },
 ];
 
 export const blogs: BlogLink[] = [
