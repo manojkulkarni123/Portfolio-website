@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
 import Dock from "@/components/Dock";
@@ -8,6 +8,7 @@ import { getPhotos, hasLibrary } from "@/lib/content";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], style: ["normal", "italic"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -22,7 +23,7 @@ const themeScript = `try{var t=localStorage.getItem('theme')||'dark';document.do
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable}`}>
+    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable} ${newsreader.variable}`}>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body className="mx-auto min-h-screen max-w-2xl overflow-x-clip bg-bg px-6 py-12 font-sans antialiased sm:py-24">
         {children}

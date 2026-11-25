@@ -8,6 +8,12 @@ export const site = {
   // one-liner next to the green dot under your name
   status: "final year @ BMSCE · joining HPE Networking, Feb '27",
   linkedin: "https://www.linkedin.com/in/manoj-kulkarni-736423205",
+  medium: "https://medium.com/@manoj_k",
+  // closing quote at the bottom of the home page
+  quote: {
+    text: "Things are not difficult to make; what is difficult is putting ourselves in the state of mind to make them.",
+    by: "Constantin Brâncuși",
+  },
   tagline: "I build AI agents, ML systems and the infra they run on.",
   // Set your birth date (YYYY-MM-DD) to show the live "Been here for 21.xxxxxxxxx years" counter under your name.
   born: "2005-09-30",
@@ -203,34 +209,56 @@ export const projects: Project[] = [
   },
 ];
 
-export const wins = [
+export type Milestone = { date: string; title: string; detail?: string };
+
+export const wins: {
+  name: string;
+  logo: string;
+  initials: string;
+  right: string;
+  sub: string;
+  description: string;
+  href: string;
+  timeline: Milestone[];
+}[] = [
   {
     name: "Omi Hackathon Bangalore",
     logo: "/logos/omi.png",
     initials: "O",
     right: "2nd place",
-    sub: "200+ builders",
+    sub: "Hackathon · 200+ builders",
     description:
       "Built Omi-Claw: an LLM gate on live Omi transcripts that spots actionable intent and hands it to an OpenClaw agent to execute. Voice to action.",
     href: `${gh}/Omi-Claw`,
+    timeline: [
+      { date: "Feb '26", title: "2nd place", detail: "Out of 200+ builders, including engineers from Apple, Microsoft, LinkedIn and Intuit." },
+      { date: "Feb '26", title: "Built Omi-Claw", detail: "Groq-powered intent gate on live transcripts, bridged to OpenClaw through Telegram." },
+    ],
   },
   {
     name: "Moss",
     logo: "/logos/moss.png",
     initials: "M",
-    right: "PR #88",
-    sub: "Open source | YC-backed",
-    description: "Merged: an AutoGen integration cookbook using Moss as the retrieval layer for multi-agent workflows.",
+    right: "Contributor",
+    sub: "YC-backed semantic search platform",
+    description: "An AutoGen integration cookbook using Moss as the retrieval layer for multi-agent workflows.",
     href: "https://github.com/usemoss/moss/pull/88",
+    timeline: [
+      { date: "Apr '26", title: "Merged #88", detail: "AutoGen cookbook landed in the official repo." },
+      { date: "Mar '26", title: "Opened #88", detail: "Showed Moss as the retrieval layer agents pull context from at runtime." },
+    ],
   },
   {
     name: "awesome-openclaw-usecases",
     logo: "/logos/openclaw.png",
     initials: "O",
-    right: "PR #2",
-    sub: "Open source",
-    description: "Merged: a use case that streams live agent progress to Todoist for visibility into long-running tasks.",
+    right: "Contributor",
+    sub: "Community collection of OpenClaw use cases",
+    description: "A use case that streams live agent progress to Todoist for visibility into long-running tasks.",
     href: "https://github.com/hesamsheikh/awesome-openclaw-usecases/pull/2",
+    timeline: [
+      { date: "Feb '26", title: "Merged #2", detail: "Todoist task manager for agent visibility, merged the next day." },
+    ],
   },
 ];
 

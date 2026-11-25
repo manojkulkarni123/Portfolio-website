@@ -4,16 +4,16 @@
 /* `dark:` utilities follow <html data-theme="dark"> */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* shadcn neutral palette, same values as the reference site */
+/* light = warm paper, dark = plain black */
 :root {
-  --bg: hsl(0 0% 100%);
-  --fg: hsl(210 11.1% 3.53%);
-  --muted: hsl(0 0% 45.1%);
-  --line: hsl(0 0% 89.8%);
-  --card: hsl(0 0% 100%);
-  --secondary: hsl(0 0% 96.1%);
-  --accent: hsl(0 0% 96.1%);
-  --accent-soft: hsl(0 0% 96.1%);
+  --bg: #faf9f6;
+  --fg: #1a1917;
+  --muted: #6f6c66;
+  --line: #e4e1da;
+  --card: #f4f2ed;
+  --secondary: #ecE9e2;
+  --accent: #ecE9e2;
+  --accent-soft: #ecE9e2;
   --danger: hsl(0 84.2% 60.2%);
 }
 :root[data-theme="dark"] {
@@ -21,7 +21,7 @@
   --fg: hsl(0 0% 98%);
   --muted: hsl(0 0% 63.9%);
   --line: hsl(0 0% 14.9%);
-  --card: hsl(210 11.1% 3.53%);
+  --card: hsl(0 0% 5.5%);
   --secondary: hsl(0 0% 14.9%);
   --accent: hsl(0 0% 14.9%);
   --accent-soft: hsl(0 0% 14.9%);
@@ -39,6 +39,7 @@
   --color-accent-soft: var(--accent-soft);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader), Georgia, serif;
 }
 
 body {

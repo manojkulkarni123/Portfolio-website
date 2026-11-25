@@ -27,7 +27,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const { meta, content } = post;
   return (
     <section id="blog">
-      <h1 className="title max-w-[650px] text-2xl font-medium tracking-tighter">{meta.title}</h1>
+      <h1 className="title max-w-[650px] font-serif text-3xl tracking-tight sm:text-4xl">{meta.title}</h1>
       <div className="mb-8 mt-2 flex max-w-[650px] items-center justify-between text-sm">
         <PostDate date={meta.date} />
       </div>

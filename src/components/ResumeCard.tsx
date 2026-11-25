@@ -31,7 +31,7 @@ export default function ResumeCard({
   const external = href && !href.startsWith("/");
 
   const body = (
-    <div className="flex rounded-lg bg-card text-fg">
+    <div className="flex rounded-lg text-fg">
       <div className="flex-none">
         <span className="relative m-auto flex size-12 shrink-0 overflow-hidden rounded-full border dark:bg-fg">
           {logo ? (
