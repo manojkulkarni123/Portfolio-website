@@ -31,7 +31,7 @@ const cover = (id: number) => `https://covers.openlibrary.org/b/id/${id}-M.jpg`;
 export const books: Book[] = [
   { title: "Meditations", author: "Marcus Aurelius", status: "read", cover: cover(15256763) },
   { title: "The Almanack of Naval Ravikant", author: "Eric Jorgenson", status: "read" },
-  { title: "The Tao of Seneca", author: "Seneca", status: "read" },
+  { title: "The Tao of Seneca", author: "Seneca", status: "read", note: "Practical letters from a Stoic master.", cover: "/covers/tao-of-seneca.png" },
   { title: "Self-Reliance", author: "Ralph Waldo Emerson", status: "read" },
   { title: "Jonathan Livingston Seagull", author: "Richard Bach", status: "read", cover: cover(6522230) },
   { title: "Can't Hurt Me", author: "David Goggins", status: "read" },
