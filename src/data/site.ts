@@ -12,7 +12,7 @@ export const site = {
   // Set your birth date (YYYY-MM-DD) to show the live "Been here for 21.xxxxxxxxx years" counter under your name.
   born: "2005-09-30",
   // Put a photo at public/me.jpg and set avatar: "/me.jpg" to replace the initials.
-  avatar: undefined as string | undefined,
+  avatar: "/me.jpg",
   initials: "MJ",
 };
 

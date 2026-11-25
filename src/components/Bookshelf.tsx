@@ -19,6 +19,8 @@ const SPINES = [
   { bg: "#1e3a5f", fg: "#eff6ff" },
 ];
 
+const PER_ROW = 11;
+
 function hash(s: string) {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
@@ -57,19 +59,21 @@ function Shelf({ title, books, selected, onSelect }: { title: string; books: She
         <h2 className="text-sm font-semibold">{title}</h2>
         <span className="text-xs tabular-nums text-muted">{books.length}</span>
       </div>
-      {books.length === 0 ? (
-        <div className="flex h-24 items-center justify-center rounded-md border border-dashed text-xs text-muted">empty shelf</div>
-      ) : (
-        <div className="overflow-x-auto pb-1 pt-6 [scrollbar-width:none]">
-          <div className="flex min-w-max items-end gap-1 px-1">
-            {books.map((b) => (
-              <Spine key={b.title} book={b} selected={selected === b.title} onClick={() => onSelect(b.title)} />
-            ))}
+      {/* long shelves wrap onto extra rows, each with its own plank */}
+      <div className="space-y-6">
+        {Array.from({ length: Math.ceil(books.length / PER_ROW) }, (_, r) => books.slice(r * PER_ROW, (r + 1) * PER_ROW)).map((row, r) => (
+          <div key={r}>
+            <div className="overflow-x-auto pb-1 pt-6 [scrollbar-width:none]">
+              <div className="flex min-w-max items-end gap-1 px-1">
+                {row.map((b) => (
+                  <Spine key={b.title} book={b} selected={selected === b.title} onClick={() => onSelect(b.title)} />
+                ))}
+              </div>
+            </div>
+            <div className="h-2 rounded-sm bg-secondary shadow-[0_6px_12px_-4px_rgba(0,0,0,.5)]" />
           </div>
-        </div>
-      )}
-      {/* the plank */}
-      <div className="h-2 rounded-sm bg-secondary shadow-[0_6px_12px_-4px_rgba(0,0,0,.5)]" />
+        ))}
+      </div>
     </div>
   );
 }
@@ -113,9 +117,11 @@ export default function Bookshelf({ books }: { books: ShelfBook[] }) {
           </motion.div>
         )}
       </AnimatePresence>
-      {shelves.map(([t, list]) => (
-        <Shelf key={t} title={t} books={list} selected={selected} onSelect={toggle} />
-      ))}
+      {shelves
+        .filter(([, list]) => list.length > 0)
+        .map(([t, list]) => (
+          <Shelf key={t} title={t} books={list} selected={selected} onSelect={toggle} />
+        ))}
     </div>
   );
 }

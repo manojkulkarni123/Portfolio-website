@@ -15,7 +15,7 @@ export default async function LibraryPage() {
     <main className="space-y-12">
       <Reveal>
         <h1 className="text-2xl font-medium tracking-tighter">library</h1>
-        <p className="mt-2 text-sm text-muted">Books that shaped how I think, and a few I&apos;m eyeing. Tap a spine.</p>
+        <p className="mt-2 text-sm text-muted">Books that shaped how I think. Tap a spine.</p>
       </Reveal>
 
       <Reveal delay={0.08}>
