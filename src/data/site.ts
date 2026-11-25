@@ -23,8 +23,16 @@ export const site = {
 };
 
 export const about: { text: string; href?: string }[][] = [
-  [{ text: "Tldr; final-year CS undergrad who likes building things that run on their own." }],
-  [{ text: "Agents, ML systems, Kubernetes, and a homelab made out of an old laptop." }],
+  [
+    { text: "I build software that keeps an eye on other software. At HPE I trained models that " },
+    { text: "warn about 2.5 hours before an HPC node dies", href: "/projects/hpc-aiops" },
+    { text: ". On my own time I built " },
+    { text: "AgentK", href: "/projects/agentk" },
+    { text: ", an agent that works out why your Kubernetes pods are crashing and asks before it touches anything." },
+  ],
+  [
+    { text: "Before that I shipped LangGraph agents to production at HiDevs, including one that reads every submitted GitHub repo and checks whether the code actually does what the README claims. I took 2nd at the Omi hackathon out of 200+ builders, and I run a homelab on an old laptop with the lid closed." },
+  ],
   [
     { text: "If you want to know more about me, " },
     { text: "here are some things I believe in", href: "/blog/things-i-believe" },
@@ -133,10 +141,10 @@ export const projects: Project[] = [
   {
     slug: "agentk",
     name: "AgentK",
-    highlight: "human-in-the-loop",
+    highlight: "zero write access",
     stack: "LangGraph | kopf | Kubernetes",
     oneLiner:
-      "A Kubernetes remediation agent that learns from incidents. A read-only operator flags failures; a LangGraph agent investigates on a tool budget, proposes a fix behind an approval gate, and remembers every approved incident.",
+      "When a pod crashes, AgentK investigates like an on-call engineer: it reads logs, events, configs and the workload spec, finds the root cause, and drafts the fix. It can't apply it. RBAC keeps it read-only, a human approves every diagnosis, and approved fixes become memory for the next incident.",
     logo: "/logos/kubernetes.svg",
     blurb:
       "Kubernetes remediation agent that learns from incidents: read-only operator, agentic diagnosis loop, human approval gate, memory of approved fixes.",
@@ -148,10 +156,10 @@ export const projects: Project[] = [
   {
     slug: "hpc-aiops",
     name: "AIOps for HPC clusters",
-    highlight: "6/7 failures caught",
+    highlight: "~2.5h early warning",
     stack: "PyTorch | LSTM-VAE | Transformers",
     oneLiner:
-      "From my HPE internship: unsupervised node-failure prediction with ~2.5h of warning on Marconi-100, and a Pi-Transformer that fuses metrics with 25M+ log lines.",
+      "Nobody has labels for HPC node failures, so I taught a model what a healthy node looks like instead. On real Marconi-100 telemetry it caught 6 of 7 failures about 2.5 hours before they happened. Built at HPE, alongside a transformer that reads metrics and 25M+ log lines together.",
     logo: "/logos/hpe.png",
     blurb:
       "From my HPE internship: a dual LSTM-VAE that warns ~2.5h before node failures, and Pi-Transformer, which fuses metrics and logs to detect anomalies.",
@@ -165,7 +173,7 @@ export const projects: Project[] = [
     highlight: "EEG neuromarketing",
     stack: "Python | MNE | LSL | PsychoPy",
     oneLiner:
-      "We strap a 19-channel EEG cap on people, play real TV ads, and turn their brainwaves into a second-by-second engagement curve: where the ad hooks them, where it loses them, and whether wanting it shows up before they say so.",
+      "We put a 19-channel EEG cap on people, play them real TV ads, and turn their brainwaves into a second-by-second engagement curve: where the ad hooks them, where it loses them, and whether wanting the product shows up in the brain before they say it out loud.",
     logo: "/logos/brain.svg",
     blurb:
       "A neuromarketing rig: a 19-channel dry-electrode EEG cap, real TV ads and our own Python pipeline, turning brainwaves into second-by-second engagement.",
@@ -180,8 +188,8 @@ export const projects: Project[] = [
     highlight: "10+ services",
     stack: "Ubuntu | Kubernetes | Tailscale",
     oneLiner:
-      "An old laptop turned headless server: a local Kubernetes cluster, Nginx, Pi-hole DNS filtering, Prometheus/Grafana and a self-hosted OpenClaw agent, all reachable over Tailscale.",
-    logo: "/logos/ubuntu.svg",
+      "My production environment is an old laptop with the lid closed. It runs a Kubernetes cluster, Pi-hole blocking ads for the whole network, Prometheus and Grafana watching all of it, and my own OpenClaw agent, reachable from anywhere over Tailscale.",
+    logo: "/logos/homelab.svg",
     blurb: "Self-hosted homelab.",
     tags: ["Kubernetes", "Tailscale", "Prometheus"],
   },
@@ -203,39 +211,48 @@ export const wins: {
     name: "Omi Hackathon Bangalore",
     logo: "/logos/omi.png",
     initials: "O",
-    right: "2nd place",
-    sub: "Hackathon · 200+ builders",
+    right: "2nd of 200+",
+    sub: "Built Omi-Claw: say it out loud, an agent does it",
     description:
       "Built Omi-Claw: an LLM gate on live Omi transcripts that spots actionable intent and hands it to an OpenClaw agent to execute. Voice to action.",
     href: `${gh}/Omi-Claw`,
     timeline: [
-      { date: "Feb '26", title: "2nd place", detail: "Out of 200+ builders, including engineers from Apple, Microsoft, LinkedIn and Intuit." },
-      { date: "Feb '26", title: "Built Omi-Claw", detail: "Groq-powered intent gate on live transcripts, bridged to OpenClaw through Telegram." },
+      { date: "Feb '26", title: "2nd place", detail: "Out of 200+ builders, up against engineers from Apple, Microsoft, LinkedIn and Intuit." },
+      {
+        date: "Feb '26",
+        title: "Built Omi-Claw",
+        detail:
+          "Omi listens to your conversations all day. Omi-Claw adds an LLM gate (Groq) that picks out the things you actually want done and hands them to an OpenClaw agent over Telegram to execute. Voice to action, with no app to open.",
+      },
     ],
   },
   {
     name: "Moss",
     logo: "/logos/moss.png",
     initials: "M",
-    right: "Contributor",
-    sub: "YC-backed semantic search platform",
+    right: "Merged",
+    sub: "YC-backed semantic search · wrote their AutoGen integration",
     description: "An AutoGen integration cookbook using Moss as the retrieval layer for multi-agent workflows.",
     href: "https://github.com/usemoss/moss/pull/88",
     timeline: [
-      { date: "Apr '26", title: "Merged #88", detail: "AutoGen cookbook landed in the official repo." },
-      { date: "Mar '26", title: "Opened #88", detail: "Showed Moss as the retrieval layer agents pull context from at runtime." },
+      { date: "Apr '26", title: "Merged #88", detail: "The AutoGen cookbook now ships in Moss's official repo, for anyone wiring Moss into a multi-agent system." },
+      { date: "Mar '26", title: "Opened #88", detail: "Agents are only as good as the context they can find. The cookbook shows AutoGen agents using Moss to pull relevant knowledge mid-task instead of stuffing everything into the prompt." },
     ],
   },
   {
     name: "awesome-openclaw-usecases",
     logo: "/logos/openclaw.png",
     initials: "O",
-    right: "Contributor",
+    right: "Merged",
     sub: "Community collection of OpenClaw use cases",
     description: "A use case that streams live agent progress to Todoist for visibility into long-running tasks.",
     href: "https://github.com/hesamsheikh/awesome-openclaw-usecases/pull/2",
     timeline: [
-      { date: "Feb '26", title: "Merged #2", detail: "Todoist task manager for agent visibility, merged the next day." },
+      {
+        date: "Feb '26",
+        title: "Merged #2",
+        detail: "An agent running for an hour is a black box. This streams an OpenClaw agent's progress into Todoist as it works, so you can see what it's doing without opening a terminal. Merged the next day.",
+      },
     ],
   },
 ];
